@@ -1,0 +1,97 @@
+/* Custom Scrollbar untuk Daftar Nama (Slate Neutral Theme) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.5); /* slate-200/50 */
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.4); /* slate-500/40 */
+  border-radius: 10px;
+  border: 2px solid transparent;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6); /* slate-500/60 */
+}
+
+.scrollable-list {
+  -webkit-overflow-scrolling: touch; /* Inertial scroll untuk iOS/iPadOS */
+}
+
+/* Base Body Styles */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom Animation Classes */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 4px 4px 0px 0px #1E293B;
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 6px 6px 0px 0px #1E293B;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s infinite ease-in-out;
+}
+
+/* Pointer Glow / Shadow */
+#wheelCanvas {
+  transition: transform 0.05s ease-out;
+}
+
+/* Winner Modal Transitions */
+#winnerModal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#winnerModal.show #modalBox {
+  transform: scale(1);
+}
+
+/* Kid-Friendly Pill Styles with cute pop on hover */
+.name-pill {
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.name-pill:hover {
+  transform: scale(1.05) translateY(-2px);
+}
+
+/* Tap feedback for mobile/tablet */
+button:active {
+  transform: scale(0.95);
+}
+input:focus {
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
+}
+
+/* Tablet Optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+  main {
+    max-height: calc(100vh - 120px);
+  }
+}

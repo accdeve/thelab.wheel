@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Lab Wheel - Roda Keberuntungan</title>
+  <meta name="description" content="Roda nama interaktif, ceria, dan menyenangkan untuk anak-anak dengan efek suara lucu dan confetti meriah. Cocok untuk tablet dan aktivitas kelas!">
+  
+  <!-- Tailwind CSS v4 CDN Browser Compiler -->
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  
+  <!-- Custom CSS stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="font-sans bg-[#FAF8F5] min-h-screen text-slate-800 overflow-x-hidden selection:bg-yellow-200 flex flex-col">
+
+  <!-- Header Ceria -->
+  <header class="py-5 px-6 text-center select-none relative z-10 shrink-0">
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-800 flex items-center justify-center gap-2">
+      <span class="border-b-4 border-yellow-400 pb-1">The Lab Wheel</span>
+    </h1>
+    <p class="text-xs md:text-sm text-slate-500 font-semibold mt-2">
+      Putar roda
+    </p>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 pb-8 flex flex-col lg:flex-row gap-6 justify-center items-stretch h-full overflow-hidden">
+    
+    <!-- Bagian Kiri: Area Roda (Utama) -->
+    <div class="flex-1 flex flex-col justify-center items-center bg-white rounded-3xl p-6 shadow-[6px_6px_0px_0px_rgba(30,41,59,0.08)] border-2 border-slate-200 transition-all duration-300 relative overflow-hidden">
+
+      <!-- Roda Container (Enlarged) -->
+      <div class="relative w-full max-w-[580px] aspect-square flex items-center justify-center select-none">
+        
+        <!-- Jarum Penunjuk Roda (Pointer Arrow) - di bagian atas roda, mengarah ke bawah -->
+        <div class="absolute -top-1 left-1/2 -translate-x-1/2 z-20 pointer-events-none drop-shadow-md transition-all duration-300 hover:scale-110">
+          <svg width="45" height="55" viewBox="0 0 45 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.5 52C22.5 52 42 16.5 42 12C42 7.02944 33.2696 3 22.5 3C11.7304 3 3 7.02944 3 12C3 16.5 22.5 52 22.5 52Z" fill="#FF4B72" stroke="#1E293B" stroke-width="3.5" stroke-linejoin="round"/>
+            <circle cx="22.5" cy="12" r="5" fill="#FFFFFF"/>
+          </svg>
+        </div>
+
+        <!-- Canvas Roda -->
+        <canvas id="wheelCanvas" class="w-full h-full cursor-pointer touch-none" width="800" height="800"></canvas>
+      </div>
+
+      <!-- Tombol Putar & Aksi -->
+      <div class="mt-6 flex flex-col sm:flex-row gap-4 items-center w-full max-w-sm relative z-10">
+        <button id="spinBtn" class="flex-1 w-full py-4 px-8 bg-[#FF5A5F] hover:bg-[#FF4449] text-white font-black text-2xl rounded-2xl shadow-[4px_4px_0px_0px_#1E293B] hover:shadow-[5px_5px_0px_0px_#1E293B] border-2 border-slate-800 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#1E293B] transition-all duration-150 select-none animate-pulse-slow">
+          PUTAR
+        </button>
+        <button id="shuffleBtn" class="py-4 px-6 bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold text-lg rounded-2xl border-2 border-slate-800 shadow-[4px_4px_0px_0px_#1E293B] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#1E293B] transition-all duration-150 flex items-center justify-center gap-1" title="Acak urutan nama">
+          Acak
+        </button>
+      </div>
+    </div>
+
+    <!-- Bagian Kanan: Panel Kontrol (Input & Pengaturan) -->
+    <div class="w-full lg:w-[380px] bg-white rounded-3xl p-6 shadow-[6px_6px_0px_0px_rgba(30,41,59,0.08)] border-2 border-slate-200 flex flex-col justify-between transition-all duration-300">
+      
+      <!-- Input Nama Baru -->
+      <div class="mb-4">
+        <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2 select-none">
+          Daftar Nama
+        </h2>
+        <form id="addNameForm" class="flex gap-2">
+          <input type="text" id="nameInput" placeholder="Ketik nama di sini..." max="25" class="flex-1 px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-200 focus:border-purple-400 focus:bg-white focus:outline-none font-semibold text-slate-700 placeholder:text-slate-400 shadow-inner text-base transition-all" autocomplete="off">
+          <button type="submit" class="bg-purple-500 hover:bg-purple-600 text-white font-bold px-5 rounded-2xl border-2 border-slate-800 shadow-[3px_3px_0px_0px_#1E293B] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_#1E293B] transition-all duration-150 text-xl flex items-center justify-center" title="Tambahkan">
+            +
+          </button>
+        </form>
+      </div>
+
+      <!-- List Nama (Scrollable) -->
+      <div class="h-[380px] lg:h-[450px] overflow-y-auto mb-4 bg-slate-50 rounded-2xl border-2 border-slate-200 p-3 shadow-inner scrollable-list">
+        <ul id="namesList" class="flex flex-col gap-2">
+          <!-- Item nama akan dimasukkan dinamis di sini -->
+        </ul>
+        <div id="emptyState" class="h-full flex flex-col justify-center items-center text-slate-400 py-8 text-center hidden">
+          <p class="text-sm font-bold">Belum ada nama.</p>
+          <p class="text-xs">Tambahkan beberapa nama di atas!</p>
+        </div>
+      </div>
+
+      <!-- Opsi & Pengaturan -->
+      <div class="pt-4 border-t-2 border-slate-100 flex flex-col gap-3 select-none">
+        
+        <!-- Toggle Hapus Otomatis -->
+        <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200 cursor-pointer">
+          <div class="flex items-center gap-2">
+            <div>
+              <p class="text-sm font-bold text-slate-700">Hapus Otomatis</p>
+              <p class="text-xs text-slate-400">Buang nama setelah menang</p>
+            </div>
+          </div>
+          <div class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="autoDeleteToggle" class="sr-only peer" checked>
+            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+          </div>
+        </label>
+
+        <!-- Toggle Efek Suara -->
+        <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200 cursor-pointer">
+          <div class="flex items-center gap-2">
+            <div>
+              <p class="text-sm font-bold text-slate-700">Efek Suara Ceria</p>
+              <p class="text-xs text-slate-400">Gunakan Sound Effect</p>
+            </div>
+          </div>
+          <div class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="soundToggle" class="sr-only peer" checked>
+            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+          </div>
+        </label>
+
+        <!-- Tombol Reset Daftar -->
+        <button id="resetBtn" class="w-full py-2.5 px-4 bg-slate-100 hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-slate-600 font-bold text-sm rounded-xl transition-all border border-slate-200 active:scale-98">
+          Kosongkan Roda
+        </button>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Overlay Modal Pemenang (Pop Up) & Canvas Confetti -->
+  <div id="winnerModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+    <!-- Canvas Confetti internal to modal backdrop context -->
+    <canvas id="confettiCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+    
+    <!-- Konten Modal -->
+    <div id="modalBox" class="relative z-10 w-full max-w-xl bg-white rounded-3xl p-12 shadow-[12px_12px_0px_0px_rgba(30,41,59,1)] border-6 border-slate-800 text-center scale-75 transition-all duration-300 overflow-hidden select-none">
+      
+      <h3 class="text-3xl font-extrabold text-slate-600 mb-2 relative z-10">
+        Pemenangnya adalah...
+      </h3>
+      
+      <!-- Nama Pemenang -->
+      <div id="winnerName" class="text-5xl sm:text-6xl font-black my-8 text-purple-600 drop-shadow-sm break-words max-h-52 overflow-y-auto px-2 py-1 leading-tight tracking-wider relative z-10">
+        NAMA
+      </div>
+
+      <p id="autoDeleteMsg" class="text-sm text-slate-400 font-semibold mb-8 h-4 relative z-10">
+        Nama ini otomatis dihapus dari roda!
+      </p>
+
+      <!-- Pilihan Aksi Modal -->
+      <div class="flex flex-col sm:flex-row gap-4 relative z-10 justify-center">
+        <!-- Tombol Tutup -->
+        <button id="closeModalBtn" class="py-4 px-10 bg-purple-600 hover:bg-purple-700 text-white font-black text-xl rounded-2xl border-2 border-slate-800 shadow-[4px_4px_0px_0px_#1E293B] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_#1E293B] transition-all duration-150 flex-1">
+          Tutup
+        </button>
+        <!-- Tombol Hapus Manual (Ditampilkan jika Hapus Otomatis Nonaktif) -->
+        <button id="manualDeleteBtn" class="py-4 px-8 bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-600 font-bold text-lg rounded-2xl border-2 border-slate-800 shadow-[4px_4px_0px_0px_#1E293B] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_#1E293B] transition-all duration-150 hidden">
+          Hapus Nama
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Web Script -->
+  <script src="app.js"></script>
+</body>
+</html>
