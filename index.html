@@ -25,7 +25,7 @@
   </header>
 
   <!-- Main Container -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 pb-8 flex flex-col lg:flex-row gap-6 justify-center items-stretch h-full overflow-hidden">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 pb-8 flex flex-col md:flex-row gap-6 justify-center items-stretch md:h-full md:overflow-hidden">
     
     <!-- Bagian Kiri: Area Roda (Utama) -->
     <div class="flex-1 flex flex-col justify-center items-center bg-white rounded-3xl p-6 shadow-[6px_6px_0px_0px_rgba(30,41,59,0.08)] border-2 border-slate-200 transition-all duration-300 relative overflow-hidden">
@@ -57,7 +57,7 @@
     </div>
 
     <!-- Bagian Kanan: Panel Kontrol (Input & Pengaturan) -->
-    <div class="w-full lg:w-[380px] bg-white rounded-3xl p-6 shadow-[6px_6px_0px_0px_rgba(30,41,59,0.08)] border-2 border-slate-200 flex flex-col justify-between transition-all duration-300">
+    <div class="w-full md:w-[300px] lg:w-[380px] bg-white rounded-3xl p-6 shadow-[6px_6px_0px_0px_rgba(30,41,59,0.08)] border-2 border-slate-200 flex flex-col justify-between transition-all duration-300">
       
       <!-- Input Nama Baru -->
       <div class="mb-4">
@@ -65,8 +65,8 @@
           Daftar Nama
         </h2>
         <form id="addNameForm" class="flex gap-2">
-          <input type="text" id="nameInput" placeholder="Ketik nama di sini..." max="25" class="flex-1 px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-200 focus:border-purple-400 focus:bg-white focus:outline-none font-semibold text-slate-700 placeholder:text-slate-400 shadow-inner text-base transition-all" autocomplete="off">
-          <button type="submit" class="bg-purple-500 hover:bg-purple-600 text-white font-bold px-5 rounded-2xl border-2 border-slate-800 shadow-[3px_3px_0px_0px_#1E293B] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_#1E293B] transition-all duration-150 text-xl flex items-center justify-center" title="Tambahkan">
+          <input type="text" id="nameInput" placeholder="Ketik nama di sini..." max="25" class="flex-1 min-w-0 px-4 py-3 rounded-2xl bg-slate-50 border-2 border-slate-200 focus:border-purple-400 focus:bg-white focus:outline-none font-semibold text-slate-700 placeholder:text-slate-400 shadow-inner text-base transition-all" autocomplete="off">
+          <button type="submit" class="shrink-0 bg-purple-500 hover:bg-purple-600 text-white font-bold px-5 rounded-2xl border-2 border-slate-800 shadow-[3px_3px_0px_0px_#1E293B] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_0px_#1E293B] transition-all duration-150 text-xl flex items-center justify-center" title="Tambahkan">
             +
           </button>
         </form>

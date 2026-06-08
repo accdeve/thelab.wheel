@@ -462,6 +462,27 @@ function spinUpdate() {
   angle += angularVelocity;
   angularVelocity *= 0.983; // Gesekan (friction) - melambat perlahan
 
+  // Mainkan musik pengiring ceria dengan tempo sesuai kecepatan roda
+  if (isSoundEnabled) {
+    try {
+      initAudio();
+      const now = audioCtx.currentTime;
+      if (now >= nextNoteTime) {
+        playSpinMusicNote(spinMusicStep);
+        spinMusicStep++;
+        
+        // Atur tempo dinamis: jika berputar cepat tempo cepat, melambat seiring roda melambat
+        const minInterval = 0.11; // 110ms saat berputar cepat
+        const maxInterval = 0.38; // 380ms saat berputar lambat
+        const velocityRatio = Math.max(0, Math.min(1, angularVelocity / 0.6));
+        const interval = maxInterval - (maxInterval - minInterval) * velocityRatio;
+        nextNoteTime = now + interval;
+      }
+    } catch (e) {
+      console.error("Music update error:", e);
+    }
+  }
+
   // Mainkan detik suara saat roda berganti segmen
   if (names.length > 0) {
     const sectorAngle = (Math.PI * 2) / names.length;
@@ -495,6 +516,10 @@ function startSpin(initialVelocity) {
   
   initAudio();
   isSpinning = true;
+  
+  // Reset musik langkah & penjadwalan waktu nada pertama
+  spinMusicStep = 0;
+  nextNoteTime = audioCtx.currentTime;
   
   // Jika initialVelocity tidak diberikan (misal klik tombol), buat random ceria
   angularVelocity = initialVelocity || (0.35 + Math.random() * 0.25);
@@ -723,8 +748,8 @@ function renderNamesList() {
     li.style.borderLeft = `6px solid ${color}`;
     
     li.innerHTML = `
-      <span class="truncate max-w-[190px]">${name}</span>
-      <button onclick="removeName(${index})" class="text-slate-400 hover:text-pink-500 font-bold p-1 rounded-lg hover:bg-pink-50 transition-colors" title="Hapus nama">
+      <span class="truncate min-w-0 flex-1">${name}</span>
+      <button onclick="removeName(${index})" class="shrink-0 text-slate-400 hover:text-pink-500 font-bold p-1 rounded-lg hover:bg-pink-50 transition-colors" title="Hapus nama">
         ✕
       </button>
     `;

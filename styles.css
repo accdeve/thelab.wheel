@@ -89,9 +89,5 @@ input:focus {
   box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
 }
 
-/* Tablet Optimizations */
-@media (min-width: 768px) and (max-width: 1024px) {
-  main {
-    max-height: calc(100vh - 120px);
-  }
-}
+/* Tablet Optimizations - Biarkan layout vertical scroll secara natural di mode tablet portrait */
+
