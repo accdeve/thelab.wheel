@@ -391,13 +391,47 @@ function drawWheel() {
     ctx.save();
     ctx.rotate(startAngle + sectorAngle / 2);
     ctx.fillStyle = "#334155"; // Slate-700 kontras tinggi
-    ctx.font = "bold 32px -apple-system, BlinkMacSystemFont, 'SF Pro', 'Segoe UI', sans-serif";
-    ctx.textAlign = "right";
+
+    // Tentukan ukuran font secara dinamis agar pas dan tetap besar
+    let fontSize = 32;
+    if (names.length <= 4) {
+      fontSize = 48;
+    } else if (names.length <= 8) {
+      fontSize = 42;
+    } else if (names.length <= 12) {
+      fontSize = 36;
+    } else if (names.length <= 20) {
+      fontSize = 30;
+    } else if (names.length <= 30) {
+      fontSize = 24;
+    } else {
+      fontSize = 18;
+    }
+
+    ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, 'SF Pro', 'Segoe UI', sans-serif`;
+    ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    // Potong teks jika kepanjangan
     let text = names[i];
-    const maxTextWidth = radius * 0.68;
+
+    // Tentukan letak X teks di tengah-tengah area segmen
+    const hubRadius = 54;
+    const outerRadius = radius - 15;
+    // Letakkan teks tepat di tengah area segmen radial (dengan sedikit bias ke luar demi estetika)
+    const textX = hubRadius + (outerRadius - hubRadius) * 0.52;
+
+    // Batasi lebar teks agar tidak menabrak tengah hub, pinggir roda, atau saling bertabrakan di dekat pusat
+    // Batas fisik (hub & tepi luar) dengan margin 15px
+    const physicalMaxHalfWidth = Math.min(textX - hubRadius - 15, outerRadius - textX - 15);
+    
+    // Batas overlap: agar tinggi font tidak melebihi lebar segmen di batas dalam teks
+    // Lebar segmen pada radius r adalah r * sectorAngle. Kita ingin r * sectorAngle >= fontSize.
+    // Jadi r >= fontSize / sectorAngle. Maka setengah lebar teks maksimum adalah textX - (fontSize / sectorAngle).
+    const safetyInnerRadius = fontSize / sectorAngle;
+    const overlapMaxHalfWidth = Math.max(0, textX - safetyInnerRadius);
+
+    const maxTextWidth = Math.min(physicalMaxHalfWidth, overlapMaxHalfWidth) * 2;
+
     if (ctx.measureText(text).width > maxTextWidth) {
       while (ctx.measureText(text + "...").width > maxTextWidth && text.length > 0) {
         text = text.slice(0, -1);
@@ -405,8 +439,8 @@ function drawWheel() {
       text += "...";
     }
 
-    // Gambar teks sedikit tergeser dari ujung tepi roda
-    ctx.fillText(text, radius - 45, 0);
+    // Gambar teks tepat di tengah area segmen
+    ctx.fillText(text, textX, 0);
     ctx.restore();
   }
 
